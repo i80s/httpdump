@@ -106,7 +106,7 @@ void http_print(const u_char *sp, u_int length)
 		}
 		
 		/* Print the whole URL if it has one. */
-		fputs(" -- http://", stderr);
+		fputs("http://", stderr);
 		fwrite(host_start, 1, host_len, stderr);
 		fwrite(path_start, 1, path_len, stderr);
 		//fputs(" ", stderr);
@@ -193,7 +193,7 @@ void http_print(const u_char *sp, u_int length)
 		} /* for(ln_start = ln_end + 1 ... */
 
 		/* Print the response status. */
-		fprintf(stderr, " -- [%d ", stcode);
+		fprintf(stderr, "[%d ", stcode);
 		fwrite(sd_start, 1, sd_len, stderr);
 		fputs("]\n", stderr);
 		//fflush(stderr);
