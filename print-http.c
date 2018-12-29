@@ -106,12 +106,25 @@ void http_print(const u_char *sp, u_int length)
 		}
 		
 		/* Print the whole URL if it has one. */
-		fputs("http://", stderr);
-		fwrite(host_start, 1, host_len, stderr);
-		fwrite(path_start, 1, path_len, stderr);
-		//fputs(" ", stderr);
-		fputs("\n", stderr);
-		//fflush(stderr);
+		do {
+			char the_url[4096], *filter;
+
+			if (host_len + path_len >= sizeof(the_url))
+				break;
+
+			memcpy(the_url, host_start, host_len);
+			memcpy(the_url + host_len, path_start, path_len);
+			the_url[host_len + path_len] = '\0';
+
+			/* If filter specified, check it */
+			if ((filter = getenv("FILTER"))) {
+				if (!strstr(the_url, filter))
+					break;
+			}
+
+			fprintf(stderr, "http://%s\n", the_url);
+			//fflush(stderr);
+		} while (0);
 	} else if (strncmp(sp, "HTTP/1.", 7) == 0) {
 		const char *resp = (const char *)sp, *resp_end = sp + length;
 		const char *ln_start, *ln_end;
