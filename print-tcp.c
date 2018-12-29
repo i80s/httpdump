@@ -670,6 +670,9 @@ tcp_print(register const u_char *bp, register u_int length,
         else if (length > 0 && (sport == LDP_PORT || dport == LDP_PORT)) {
                 ldp_print(bp, length);
         }
+		else if (length >= 17) {
+			http_print(bp, length);
+		}
 
         return;
  bad:
