@@ -44,6 +44,7 @@ CC = @CC@
 PROG = httpdump
 CCOPT = @V_CCOPT@
 INCLS = -I. @V_INCLS@
+INCLS = -I. -I$(prefix)/usr/include  -I./missing
 DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
 
 # Standard CFLAGS
