@@ -1,0 +1,12 @@
+# mipsel
+cel -n
+./configure --host=mipsel-openwrt-linux --prefix=/usr
+make -j8
+mipsel-openwrt-linux-strip -s httpdump
+
+# mips
+ceb -n
+./configure --host=mips-openwrt-linux --prefix=/usr
+make -j8
+mips-openwrt-linux-strip -s httpdump
+
