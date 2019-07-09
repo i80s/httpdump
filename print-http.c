@@ -18,12 +18,12 @@
 #include "interface.h"
 #include "addrtoname.h"
 
-static inline unsigned __isspace(char c)
+static inline unsigned is_space(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
 }
 
-static inline unsigned __isblank(char c)
+static inline unsigned is_blank(char c)
 {
 	return (c == ' ' || c == '\t');
 }
@@ -78,8 +78,8 @@ void http_print(const u_char *sp, u_int length)
 				continue;
 			nm_len = nm_end - nm_start;
 			/* Option value:: */
-			for (val_start = nm_end + 1; val_start < ln_end && __isblank(*val_start); val_start++);
-			for (val_end = ln_end; (val_end > val_start) && __isspace(*(val_end - 1)); val_end--);
+			for (val_start = nm_end + 1; val_start < ln_end && is_blank(*val_start); val_start++);
+			for (val_end = ln_end; (val_end > val_start) && is_space(*(val_end - 1)); val_end--);
 			if ((val_len = val_end - val_start) == 0)
 				continue;
 			
@@ -158,7 +158,7 @@ void http_print(const u_char *sp, u_int length)
 		sd_start = sc_end + 1;
 		while (sd_start < ln_end && *sd_start == ' ')
 			sd_start++;
-		for (sd_end = ln_end; (sd_end > sd_start) && __isspace(*(sd_end - 1)); sd_end--);
+		for (sd_end = ln_end; (sd_end > sd_start) && is_space(*(sd_end - 1)); sd_end--);
 		sd_len = sd_end - sd_start;
 
 		/* Convert status to numeric for validition. */
@@ -188,8 +188,8 @@ void http_print(const u_char *sp, u_int length)
 				continue;
 			nm_len = nm_end - nm_start;
 			/* Option value:: */
-			for (val_start = nm_end + 1; val_start < ln_end && __isblank(*val_start); val_start++);
-			for (val_end = ln_end; (val_end > val_start) && __isspace(*(val_end - 1)); val_end--);
+			for (val_start = nm_end + 1; val_start < ln_end && is_blank(*val_start); val_start++);
+			for (val_end = ln_end; (val_end > val_start) && is_space(*(val_end - 1)); val_end--);
 			if ((val_len = val_end - val_start) == 0)
 				continue;
 
