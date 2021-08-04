@@ -10,3 +10,8 @@ ceb -n
 make -j8
 mips-openwrt-linux-strip -s httpdump
 
+# x86_64
+cx64 -n
+./configure --host=x86_64-openwrt-linux --prefix=/usr
+x86_64-openwrt-linux-strip -s httpdump
+
