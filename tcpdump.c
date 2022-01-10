@@ -1575,10 +1575,24 @@ compress_savefile(const char *filename)
 }
 #endif /* HAVE_FORK && HAVE_VFORK */
 
+/* *************************************************************** */
+static void skip_epon_garbage_header(const struct pcap_pkthdr *h, const u_char **spp)
+{
+	const int skip_len = 5;
+	if (memcmp(*spp, "\x55\x55", 2) == 0) {
+		*spp += skip_len;
+		((struct pcap_pkthdr *)h)->caplen -= skip_len;
+		((struct pcap_pkthdr *)h)->len -= skip_len;
+	}
+}
+/* *************************************************************** */
+
 static void
 dump_packet_and_trunc(u_char *user, const struct pcap_pkthdr *h, const u_char *sp)
 {
 	struct dump_info *dump_info;
+
+	skip_epon_garbage_header(h, &sp);
 
 	++packets_captured;
 
@@ -1702,6 +1716,8 @@ dump_packet_and_trunc(u_char *user, const struct pcap_pkthdr *h, const u_char *s
 static void
 dump_packet(u_char *user, const struct pcap_pkthdr *h, const u_char *sp)
 {
+	skip_epon_garbage_header(h, &sp);
+
 	++packets_captured;
 
 	++infodelay;
@@ -1722,6 +1738,8 @@ print_packet(u_char *user, const struct pcap_pkthdr *h, const u_char *sp)
 {
 	struct print_info *print_info;
 	u_int hdrlen;
+
+	skip_epon_garbage_header(h, &sp);
 
 	++packets_captured;
 
