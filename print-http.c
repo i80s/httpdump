@@ -38,22 +38,22 @@ void http_print(const u_char *sp, u_int length)
 	if (strncmp(sp, "GET /", 5) == 0 || strncmp(sp, "POST /", 6) == 0) {
 		const char *req_start = sp, *req_end = sp + length;
 		const char *ln_start, *ln_end;
-		const char *host_start = NULL,
-			*path_start = NULL, *path_end,
-			*rf_start = NULL,
-			*ua_start = NULL;
-		size_t path_len = 0, host_len = 0,
-			rf_len = 0, ua_len = 0;
+		const char *host_start = NULL, *path_start = NULL,
+			*path_end, *method_start = NULL, *rf_start = NULL, *ua_start = NULL;
+		size_t path_len = 0, host_len = 0, method_len = 0, rf_len = 0, ua_len = 0;
 
 		/* Parse status line */
 		ln_start = req_start;
 		if ((ln_end = (const char *)memchr(ln_start, '\n', req_end - ln_start)) == NULL)
 			return;
+		method_start = ln_start;
 		/* Pick out URL */
 		if ((path_start = (const char *)memchr(ln_start, ' ', ln_end - ln_start)) == NULL)
 			return;
-		while (path_start < ln_end && *path_start == ' ')
+		while (path_start < ln_end && *path_start == ' ') {
+			method_len = path_start - method_start;
 			path_start++;
+		}
 		if ((path_end = (const char *)memchr(path_start, ' ', ln_end - path_start)) == NULL)
 			return;
 		path_len = path_end - path_start;
@@ -107,10 +107,15 @@ void http_print(const u_char *sp, u_int length)
 		
 		/* Print the whole URL if it has one. */
 		do {
-			char the_url[4096], *filter;
+			char the_method[64] = "---", the_url[4096] = "", *filter;
 
 			if (host_len + path_len >= sizeof(the_url))
 				break;
+
+			if (method_len > 0) {
+				memcpy(the_method, method_start, method_len);
+				the_method[method_len] = '\0';
+			}
 
 			memcpy(the_url, host_start, host_len);
 			memcpy(the_url + host_len, path_start, path_len);
@@ -122,7 +127,7 @@ void http_print(const u_char *sp, u_int length)
 					break;
 			}
 
-			fprintf(stderr, "http://%s\n", the_url);
+			fprintf(stderr, "%-4s http://%s\n", the_method, the_url);
 			//fflush(stderr);
 		} while (0);
 	} else if (strncmp(sp, "HTTP/1.", 7) == 0) {
