@@ -803,14 +803,6 @@ print_txt_line(netdissect_options *ndo, const char *protoname,
 			 * it.
 			 */
 			return (0);
-		} else if (!isascii(*(pptr+idx)) ||
-		    (!isprint(*(pptr+idx)) && *(pptr+idx) != '\t')) {
-			/*
-			 * Not a printable ASCII character and not a tab;
-			 * treat this as if it were binary data, and
-			 * don't print it.
-			 */
-			return (0);
 		}
 		idx++;
 	}
